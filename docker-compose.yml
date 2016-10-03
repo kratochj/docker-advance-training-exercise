@@ -1,0 +1,16 @@
+version: "3"
+services:
+  app:
+    build: 'todoapp'
+  haproxy:
+    image: kratochj/haproxy
+    depends_on:
+      - app
+    ports:
+      - "8080:5000"
+      - "1936:1936"
+    environment:
+        BACKENDS: "app:80"
+        DNS_ENABLED: "true"
+        LOG_LEVEL: "debug"
+
