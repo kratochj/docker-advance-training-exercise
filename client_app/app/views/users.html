@@ -1,0 +1,38 @@
+<div ng-show="!loadedUsers">Loading data...</div>
+
+<table class="table table-striped table-hover" ng-show="loadedUsers">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Name</th>
+			<th>Password</th>
+			<th>Twitter</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="user in users">
+			<td>{{$index + 1}}</td>
+			<td>{{user.username}}</td>
+			<td>{{user.password}}</td>
+			<td>{{user.twitter}}</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<form name="myForm" ng-submit="submitMyForm()">
+    <div class="form-group">
+       <label for="name">Username</label>
+       <input type="text" class="form-control" id="name" placeholder="Username" ng-model="fields.username">
+     </div>
+    <div class="form-group">
+       <label for="password">Password</label>
+       <input type="password" class="form-control" id="password" placeholder="Password" ng-model="fields.password">
+     </div>
+    <div class="form-group">
+       <label for="twitter">Twitter Handle</label>
+       <input type="text" class="form-control" id="twitter" placeholder="Twitter Handle" ng-model="fields.twitter">
+     </div>
+     <button type="submit" class="btn btn-default">Submit</button>
+	 
+</form>

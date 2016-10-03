@@ -1,0 +1,16 @@
+{
+  "name": "server_app",
+  "version": "1.0.0",
+  "description": "Node.js simple server",
+  "author": "Jiri Kratochvil <jiri@kratochvil.eu>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.13.3",
+    "redis": "2.5.0",
+    "redis-jsonify": "^1.0.1"
+  }
+}
