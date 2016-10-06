@@ -30,9 +30,9 @@ port `6379`. The server app expects enviroment variables `REDIS_HOST` and `REDIS
 As soon as you get run the app, you can check API by using your favorite REST client (`curl`? :-) ). 
 
 Here are some endpoints:
-* `/accounts` `GET` - list of all accounts in database
-* `/accounts?username=#{username}` `GET` - detail of user
-* `/accounts` `POST` - store account details in database
+* `/account` `GET` - list of all accounts in database
+* `/account?username=#{username}` `GET` - detail of user
+* `/account` `POST` - store account details in database
 
 Example of data structure for `POST` request:
 ```
