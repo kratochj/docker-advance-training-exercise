@@ -7,8 +7,8 @@ Overlay network uses kv storage (consul in our examples) and docker engine on ea
 ## Create worker docker instances
 
 ```
-docker-machine create --driver virtualbox --virtualbox-boot2docker-url=https://github.com/boot2docker/boot2docker/releases/download/v1.10.3/boot2docker.iso swarm-node-01
-docker-machine create --driver virtualbox --virtualbox-boot2docker-url=https://github.com/boot2docker/boot2docker/releases/download/v1.10.3/boot2docker.iso swarm-node-02
+docker-machine create --driver virtualbox swarm-node-01
+docker-machine create --driver virtualbox swarm-node-02
 ```
 
 ## Create consul container
@@ -22,7 +22,7 @@ Create container following container on `swarm-master` node, which has following
   * runs command: `-server -bootstrap -ui-dir ui`
 
 ```
-docker run -d -p 8500:8500 --name=consul progrium/consul -server -bootstrap -ui-dir ui
+docker run --restart=always -d -p 8500:8500 --name=consul progrium/consul -server -bootstrap -ui-dir ui
 ```
 
 ## Update docker engine on docker host
@@ -42,7 +42,6 @@ EXTRA_ARGS='
 ```
 
   * Restart docker service: `/etc/init.d/docker restart`
-  * Create custom network: `docker network create --driver overlay --subnet 10.0.9.0/24 example-network`
   
 Repeat on nodes `swarm-node-01` and `swarm-node-02`
 
@@ -50,7 +49,7 @@ Repeat on nodes `swarm-node-01` and `swarm-node-02`
 
 ```
 eval $(docker-machine env swarm-node-01)
-docker network create --driver overlay apps
+docker network create --driver overlay net-apps
 ```
 
 ### Verify the network was created:

@@ -15,7 +15,7 @@ eval $(docker-machine env swarm-master)
 ### Create swarm master container
 
 ```
-docker run -d -p 3376:3376 --name=swarm-master -t -v /var/lib/boot2docker:/var/lib/boot2docker swarm manage --tlsverify --tlscacert=/var/lib/boot2docker/ca.pem --tlscert=/var/lib/boot2docker/server.pem --tlskey=/var/lib/boot2docker/server-key.pem -H tcp://0.0.0.0:3376 --strategy spread --advertise <MASTER_IP>:3376 consul://<MASTER_IP>:8500 
+docker run --restart=always -d -p 3376:3376 --name=swarm-master -t -v /var/lib/boot2docker:/var/lib/boot2docker swarm manage --tlsverify --tlscacert=/var/lib/boot2docker/ca.pem --tlscert=/var/lib/boot2docker/server.pem --tlskey=/var/lib/boot2docker/server-key.pem -H tcp://0.0.0.0:3376 --strategy spread --advertise <MASTER_IP>:3376 consul://<MASTER_IP>:8500 
 ```
 
 ## `swarm-node-*`
@@ -59,7 +59,7 @@ Server Version: swarm/1.2.5
 Run single redis container
 
 ```
-docker run -d -e reschedule:on-node-failure --name=redis --net=apps redis
+docker run -d -e reschedule:on-node-failure --name=redis --net=net-apps redis
 ```
 
 Find out on which node is redis running and stop docker service on that node.
