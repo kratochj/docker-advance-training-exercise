@@ -50,7 +50,7 @@ Repeat on nodes `swarm-node-01` and `swarm-node-02`
 
 ```
 eval $(docker-machine env swarm-node-01)
-docker network create --driver overlay frontend
+docker network create --driver overlay apps
 ```
 
 ### Verify the network was created:
