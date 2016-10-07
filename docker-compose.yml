@@ -1,0 +1,21 @@
+version: '2'
+services: 
+  redis:
+    image: redis
+  rev_proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports: 
+      - "80:80"
+      - "443:443"
+  server_app:
+    build: server_app
+    environment:
+      - VIRTUAL_HOST=server.local
+    links: 
+      - "redis:redis"
+  client_app:
+    build: client_app
+    environment:
+      - VIRTUAL_HOST=client.local
