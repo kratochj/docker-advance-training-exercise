@@ -32,6 +32,7 @@ docker run -d --name swarm-agent -t swarm join --advertise ${NODE_IP}:2376 consu
 
 or if you have docker client installed locally, just copy below commands:
 ```
+eval $(docker-machine env swarm-node-*)
 docker run -d --name swarm-agent -t swarm join --advertise $(docker-machine ip <SWARM_MACHINE_NAME>):2376 consul://<MASTER_IP>:8500
 ```
 
