@@ -4,7 +4,7 @@ Observe CGroups in action
 ## Create VM 
 
 Create VM using `docker-machine` with 2 vCPUs.
-  * 
+ 
 ## Test CGroups 
 
 Notes: 
