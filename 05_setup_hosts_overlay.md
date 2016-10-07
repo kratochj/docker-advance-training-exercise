@@ -88,5 +88,6 @@ docker run --name listener --rm -it --net=apps -p 8000 busybox nc -ll -p 8000
 ### Send message to container from `swarm-node-02`
 
 ```
+docker run --rm -it --net=apps busybox /bin/sh
 echo "TEST" | nc listener:8000
 ```
