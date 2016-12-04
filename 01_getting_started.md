@@ -66,12 +66,10 @@ All rights reserved.
 ## Deploy VM with docker engine
 
 ```
-docker-machine create --driver virtualbox --swarm-master --virtualbox-boot2docker-url=https://github.com/boot2docker/boot2docker/releases/download/v1.10.3/boot2docker.iso swarm-master
+docker-machine create --driver virtualbox default
 ```
 
-Note: we are using parameter `--swarm-master` so that `docker-machine` will create suitable ssl certificates for us. We will stop `swarm-master` container created for us in next steps.
-
-### Verify that instances are up an accessible
+### Verify that instance is up an accessible
 
 ```
 docker-machine ls
@@ -82,13 +80,6 @@ docker-machine ls
 ```
 eval $(docker-machine env swarm-master)
 docker ps
-```
-
-### Remove swarm container
-
-```
-docker stop swarm-agent-master
-docker rm swarm-agent-master
 ```
 
 ## Running first container

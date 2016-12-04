@@ -7,13 +7,16 @@ Overlay network uses kv storage (consul in our examples) and docker engine on ea
 ## Create worker docker instances
 
 ```
-docker-machine create --driver virtualbox swarm-node-01
-docker-machine create --driver virtualbox swarm-node-02
+docker-machine create --driver virtualbox --swarm-master master
+docker-machine create --driver virtualbox node-01
+docker-machine create --driver virtualbox node-02
 ```
+
+Note: we are using parameter `--swarm-master` so that `docker-machine` will create suitable ssl certificates for us. We will stop `master` container created for us in next steps.
 
 ## Create consul container
 
-Create container following container on `swarm-master` node, which has following properties:
+Create container following container on `master` node, which has following properties:
 
   * runs in daemon mode,
   * from image `progrium/consul`,
@@ -27,8 +30,7 @@ docker run --restart=always -d -p 8500:8500 --name=consul progrium/consul -serve
 
 ## Update docker engine on docker host
 
-
-  * ssh to `swarm-master`,
+  * ssh to `master`,
   * update docker configuraition to contain following changes:
 
 ```
@@ -43,12 +45,12 @@ EXTRA_ARGS='
 
   * Restart docker service: `/etc/init.d/docker restart`
   
-Repeat on nodes `swarm-node-01` and `swarm-node-02`
+Repeat on nodes `node-01` and `node-02`
 
-## Create docker network on `swarm-node-01`
+## Create docker network on `node-01`
 
 ```
-eval $(docker-machine env swarm-node-01)
+eval $(docker-machine env node-01)
 docker network create --driver overlay net-apps
 ```
 
@@ -65,10 +67,10 @@ eccfee3f754d        none                null
 a109e15d50cf        host                host
 ```
 
-Also verify on `swarm-node-02`:
+Also verify on `node-02`:
 
 ```
-eval $(docker-machine env swarm-node-01)
+eval $(docker-machine env node-01)
 docker network ls
 ```
 
@@ -78,13 +80,13 @@ Go to your browser to <MASTER_IP>:8500
 
 ## Test communication between containers on different hosts
 
-### Create listener container on node `swarm-node-01`
+### Create listener container on node `node-01`
 
 ```
 docker run --name listener --rm -it --net=apps -p 8000 busybox nc -ll -p 8000
 ```
 
-### Send message to container from `swarm-node-02`
+### Send message to container from `node-02`
 
 ```
 docker run --rm -it --net=apps busybox /bin/sh

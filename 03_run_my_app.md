@@ -16,7 +16,6 @@ port `6379`.
 
 Use [Docker Hub](https://hub.docker.com/) to get the latest version.
 
-
 ## 2. Dockerize server app
 
 Remmember - we need prepare node.js environment in your docker container. It doesn't matter if you use prebuild docker image (from docker's hub) or you're 
