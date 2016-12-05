@@ -5,7 +5,7 @@ Setup Docker environment
 
 ### Docker
 
-Install Docker v1.10.3
+Install Docker v1.12.3
 
 #### Linux
 ```
@@ -16,17 +16,17 @@ yum install docker
 
 #### Mac
 
-[Download and install Docker for Mac](https://docs.docker.com/v1.10/engine/installation/mac/)
+[Download and install Docker for Mac](https://docs.docker.com/engine/installation/mac/)
 
 #### Win
 
-[Download and install Docker for Mac](https://docs.docker.com/v1.10/engine/installation/windows/)
+[Download and install Docker for Win](https://docs.docker.com/engine/installation/windows/)
 
 #### Verify installation
 
 ```
 docker -v
-Docker version 1.10.3, build 8b7fa4a/1.10.3
+Docker version 1.12.3, build 8b7fa4a/1.12.3
 ```
 
 ### Docker-machine
