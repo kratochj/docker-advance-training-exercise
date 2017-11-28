@@ -68,3 +68,67 @@ The following step will deploy a single-instance MySQL Deployment. The MySQL con
 
 > **Note**: For detail check manifest: `mysql.yaml` 
 
+``` shell
+kubectl create -f mysql.yaml
+```
+
+After checking your deployment with: `kubectl get po`
+
+You should get this: 
+
+``` shell
+NAME                               READY     STATUS    RESTARTS   AGE
+wordpress-mysql-3901558700-zb5x3   1/1       Running   0          23s
+```
+
+### 4. Deploy Wordpress
+
+The following step describes deployment of a single-instance WordPress Deployment and Service. It uses many of the same features like a PVC for persistent storage and a Secret for the password. But it also uses a different setting: type: NodePort. This setting exposes WordPress to traffic from outside of the cluster.
+
+> **Note**: For detail check manifest: `wordpress.yaml` 
+
+``` shell
+kubectl create -f wordpress.yaml
+```
+
+After checking your deployment with: `kubectl get po`
+
+You should get this: 
+
+``` shell
+NAME                               READY     STATUS    RESTARTS   AGE
+wordpress-2395684243-zg4jt         1/1       Running   0          27s
+wordpress-mysql-3901558700-zb5x3   1/1       Running   0          58s
+```
+
+After that, check also that wordpress has also service in place:
+
+``` shell
+kubectl get services wordpress
+```
+
+The result should look like this: 
+
+```
+NAME        CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE
+wordpress   10.0.0.139   <nodes>       80:32242/TCP   48s
+```
+
+> **Note:** Minikube can only expose Services through `NodePort`. 
+> 
+> The `EXTERNAL-IP` is always `<nodes>` 
+
+Run the following command to get the IP Address for the WordPress Service:
+
+``` shell
+minikube service wordpress --url
+```
+
+The response should be like this:
+
+``` shell 
+http://192.168.99.101:32242
+```
+
+Copy the IP address, and load the page in your browser to view your site.
+
