@@ -1,226 +1,134 @@
-Setup Kubernetes cluster (k8s)
-==============================
+# Install application on Kubernetes
 
-**All files needed for this exercise are stored in folder [09_kubernetes](09_kubernetes) in this repository**
+## Kubernetes Installation 
 
-## Install kubectl
+We're gonna use minikube as a kubernetes cluster. 
 
-`kubectl` is management tool for your kubernetes clusters.
+Go ahead and install `minikube` and `kubectl` on your computer. Simply follow this guide: https://kubernetes.io/docs/tasks/tools/install-minikube/
 
-To install it, follow those instructions:
+Once you've finished installation on `minikube` and `kubectl`, run minikube by executing command: 
 
-#### Linux and Mac
-
-```
- curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
- chmod +x ./kubectl
- sudo mv ./kubectl /usr/local/bin/kubectl
+```  shell
+minikube start
 ```
 
-#### Windows
+Now you have your kubernetes cluster spinned up. Try check kubernetes dashboard by executing command `minikube dashboard`
 
-```
- curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.6.3/bin/windows/amd64/kubectl.exe
-```
-and add this binary to your PATH
+## Application Deployment 
 
+### 1. Create persistent volumes for our application: 
 
-## Setup minikube
+MySQL and Wordpress each use a PersistentVolume to store data. While Kubernetes supports many different types of PersistentVolumes, this tutorial covers hostPath.
 
-### Installation
-
-#### OSX
-
-```
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.20.0/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+``` shell
+kubectl create -f volumes.yaml
 ```
 
-Feel free to leave off the sudo mv minikube /usr/local/bin if you would like to add minikube to your path manually.
+And verify that two volumes are available: 
 
-#### Linux
-
-```
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.20.0/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+``` shell 
+kubectl get pv 
 ```
 
-Feel free to leave off the sudo mv minikube /usr/local/bin if you would like to add minikube to your path manually.
-
-#### Windows [Experimental]
-
-Download the `minikube-windows-amd64.exe` file, rename it to `minikube.exe` and add it to your path.
-
-#### Windows Installer [Experimental]
-
-Download the `minikube-installer.exe` file, and execute the installer. This will automatically add minikube.exe to your path with an uninstaller available as well.
-
-
-## Create your kubernetes cluster
+The response should be like this:
 
 ```
-$ minikube start
-Starting local Kubernetes cluster...
-Running pre-create checks...
-Creating machine...
-Starting local Kubernetes cluster...
+NAME         CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
+local-pv-1   20Gi       RWO           Retain          Available                                      1m
+local-pv-2   20Gi       RWO           Retain          Available                                      1m
 ```
 
-Check your environment:
+### 2. Store database password as `secret`:
+
+A Secret is an object that stores a piece of sensitive data like a password or key. The manifest files are already configured to use a Secret, but you have to create your own Secret.  
+
+``` shell
+kubectl create secret generic mysql-pass --from-literal=password=YOUR_PASSWORD
+```
+
+> **Note**: Replace `YOUR_PASSWORD` with the password you want to apply.
+
+Verify that your secret is stored in your cluster: 
+
+``` shell
+kubectl get secrets
+```
+
+You should get something like this:
 
 ```
-$ kubectl get nodes
-NAME       STATUS    AGE
-minikube   Ready     104d
+NAME          TYPE                 DATA      AGE
+mysql-pass    Opaque               1         37s
 ```
 
 
-## Prepare environment
+### 3. Deploy MySQL
 
-```
-$ minikube ssh
-$ mkdir -p /tmp/data
-$ chmod a+rwt /tmp/data
-$ exit
-```
+The following step will deploy a single-instance MySQL Deployment. The MySQL container mounts the PersistentVolume at `/var/lib/mysql`. The `MYSQL_ROOT_PASSWORD` environment variable sets the database password from the Secret.
 
-Create password file called `password.txt` (be carefull not to make `new line` and the end of this file).
+> **Note**: For detail check manifest: `mysql.yaml` 
 
-On Linux you can use to ensure that everything is fine:
-
-```
-$ echo "secretpassword" > password.txt
-$ tr --delete '\n' <password.txt >.strippedpassword.txt && mv .strippedpassword.txt password.txt
+``` shell
+kubectl create -f mysql.yaml
 ```
 
-## Install your app
+After checking your deployment with: `kubectl get po`
 
-## Create secret in kubernetes
+You should get this: 
 
-This secret is referenced by the MySQL and WordPress pod configuration so that those pods will have access to it. The MySQL pod will set the database password, and the WordPress pod will use the password to access the database.
-
-```
-$ kubectl create secret generic mysql-pass --from-file=password.txt
-```
-
-## Deploy database
-
-Now that the persistent disks and secrets are defined, the Kubernetes pods can be launched. Start MySQL using `mysql-deployment.yaml`.
-
-```
-$ kubectl create -f mysql.yaml
-```
-
-Take a look at `mysql.yaml`, and note that we've defined a volume mount for `/var/lib/mysql`, and then created a Persistent Volume Claim that looks for a 20G volume. This claim is satisfied by any volume that meets the requirements, in our case one of the volumes we created above.
-
-Also look at the env section and see that we specified the password by referencing the secret mysql-pass that we created above. Secrets can have multiple key:value pairs. Ours has only one key password.txt which was the name of the file we used to create the secret. The MySQL image sets the database password using the `MYSQL_ROOT_PASSWORD` environment variable.
-
-To check you instalation you can run:
-
-```
-$ kubectl get pods
-NAME                               READY     STATUS              RESTARTS   AGE
-wordpress-mysql-2569670970-nvbzb   0/1       ContainerCreating   0          6s
-```
-
-and after a while you'll see that your pod has been deployed:
-
-```
+``` shell
 NAME                               READY     STATUS    RESTARTS   AGE
-wordpress-mysql-2569670970-nvbzb   1/1       Running   0          27s
+wordpress-mysql-3901558700-zb5x3   1/1       Running   0          23s
 ```
 
-You can check logs by running:
+### 4. Deploy Wordpress
 
-```
-$ kubectl logs <pod-name>
-```
+The following step describes deployment of a single-instance WordPress Deployment and Service. It uses many of the same features like a PVC for persistent storage and a Secret for the password. But it also uses a different setting: type: NodePort. This setting exposes WordPress to traffic from outside of the cluster.
 
-```
-.
-.
-.
-Database initialized
-MySQL init process in progress...
-2017-06-29 08:28:10 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
-2017-06-29 08:28:10 0 [Note] mysqld (mysqld 5.6.36) starting as process 85 ...
-Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
-Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
-Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+> **Note**: For detail check manifest: `wordpress.yaml` 
 
-
-MySQL init process done. Ready for start up.
-
-2017-06-29 08:28:15 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
-2017-06-29 08:28:15 0 [Note] mysqld (mysqld 5.6.36) starting as process 1 ...
-```
-
-Also in `mysql.yaml` we created a service to allow other pods to reach this mysql instance. The name is `wordpress-mysql` which resolves to the pod IP.
-
-Up to this point one Deployment, one Pod, one PVC, one Service, one Endpoint, two PVs, and one Secret have been created, shown below:
-
-```
-kubectl get deployment,pod,svc,endpoints,pvc -l app=wordpress -o wide && \
-  kubectl get secret mysql-pass && \
-  kubectl get pv
-```
-
-```
-NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/wordpress-mysql   1         1         1            1           34m
-
-NAME                                  READY     STATUS    RESTARTS   AGE       IP            NODE
-po/wordpress-mysql-2569670970-nvbzb   1/1       Running   0          34m       172.17.0.14   minikube
-
-NAME                  CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE       SELECTOR
-svc/wordpress-mysql   None         <none>        3306/TCP   34m       app=wordpress,tier=mysql
-
-NAME                 ENDPOINTS          AGE
-ep/wordpress-mysql   172.17.0.14:3306   34m
-
-NAME                 STATUS    VOLUME                                     CAPACITY   ACCESSMODES   AGE
-pvc/mysql-pv-claim   Bound     pvc-cf2a956f-5ca4-11e7-8f93-0800278ca6de   20Gi       RWO           34m
-NAME         TYPE      DATA      AGE
-mysql-pass   Opaque    1         34m
-NAME                                       CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM                      REASON    AGE
-pvc-cf2a956f-5ca4-11e7-8f93-0800278ca6de   20Gi       RWO           Delete          Bound     default/mysql-pv-claim               34m
-```
-
-## Deploy wordpress
-
-Next deploy WordPress using `wordpress.yaml`:
-
-```
+``` shell
 kubectl create -f wordpress.yaml
 ```
 
-Here we are using many of the same features, such as a volume claim for persistent storage and a secret for the password.
+After checking your deployment with: `kubectl get po`
 
-The WordPress image accepts the database hostname through the environment variable `WORDPRESS_DB_HOST`. We set the env value to the name of the MySQL service we created: `wordpress-mysql`.
+You should get this: 
 
-The WordPress service has the setting type: `NodePort`. This will set up the wordpress service behind an external IP.
-
-The url of your service you can find by running:
-
-```
-minikube service list
+``` shell
+NAME                               READY     STATUS    RESTARTS   AGE
+wordpress-2395684243-zg4jt         1/1       Running   0          27s
+wordpress-mysql-3901558700-zb5x3   1/1       Running   0          58s
 ```
 
-```
-|-------------|--------------------------|-----------------------------|
-|  NAMESPACE  |           NAME           |             URL             |
-|-------------|--------------------------|-----------------------------|
-| default     | kubernetes               | No node port                |
-| default     | wordpress                | http://192.168.99.100:31892 |
-| default     | wordpress-mysql          | No node port                |
-| kube-system | default-http-backend     | http://192.168.99.100:30001 |
-| kube-system | kube-dns                 | No node port                |
-| kube-system | kubernetes-dashboard     | http://192.168.99.100:30000 |
-|-------------|--------------------------|-----------------------------|
+After that, check also that wordpress has also service in place:
+
+``` shell
+kubectl get services wordpress
 ```
 
-Open URL in your browser or you can run `minikube service wordpress` which will open browser and load service URL
+The result should look like this: 
 
-## Kubernetes Dashboard
+```
+NAME        CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE
+wordpress   10.0.0.139   <nodes>       80:32242/TCP   48s
+```
 
-Kubernetes Dashboard is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage applications running in the cluster and troubleshoot them, as well as manage the cluster itself.
+> **Note:** Minikube can only expose Services through `NodePort`. 
+> 
+> The `EXTERNAL-IP` is always `<nodes>` 
 
-Check this out by running `minikube dashboard`
+Run the following command to get the IP Address for the WordPress Service:
+
+``` shell
+minikube service wordpress --url
+```
+
+The response should be like this:
+
+``` shell 
+http://192.168.99.101:32242
+```
+
+Copy the IP address, and load the page in your browser to view your site.
+
