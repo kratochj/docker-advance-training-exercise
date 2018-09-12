@@ -1,12 +1,12 @@
-# Docker Cluster exercises
+# Docker Advanced - exercises
 
   * [01 - Setup VMs running docker](01_getting_started.md)
-  * [02 - Run application on docker host](02_run_my_app.md)
-  * [03 - Docker compose](03_docker_compose.md)
-  * [04 - Production grade images](04_prod_images/README.md)
-  * [05 - CGroups](05_cgroups.md)
-  * [06 - Setup Overlay network on docker nodes](06_setup_hosts_overlay.md)
-  * [07 - Setup Swarm cluster](07_setup_swarm_cluster.md)
-  * [08 - Setup app on Swarmpit](08_swarmpit.md)
-  * [09 - Setup Kubernetes cluster](09_setup_kubernetes_cluster.md)
-  * [10 - Run app on Openshift](10_minishift/README.md)
+  * [02 - Dockerfile - CMD vs ENTRYPOINT](02_cmd_vs_entrypoint.md)
+  * [03 - Dockerfile - Multistage build](03_multistage_build/README.md)
+  * [04 - Docker Compose](04_docker_compose.md)
+  * [05 - Production images](05_prod_images/README.md)
+  * [06 - Container registry](06_container_registry/README.md)
+  * [07 - CGroups](07_cgroups.md)
+  * [08 - Setup Swarm cluster](08_swarm.md)
+  * [09 - Setup Kubernetes cluster](09_kubernetes/README.md)
+  * [10 - Setup basic monitoring](10_monitoring/README.md)
