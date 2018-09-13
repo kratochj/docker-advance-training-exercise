@@ -9,7 +9,8 @@ services:
 
   clair:
     container_name: clair_clair
-    image: quay.io/coreos/clair-git:latest
+    image: quay.io/coreos/clair:latest
+
     restart: unless-stopped
     depends_on:
       - postgres
@@ -19,5 +20,6 @@ services:
       - postgres
     volumes:
       - /tmp:/tmp
-      - /home/docker/clair_config:/config
+      - ./clair_config:/config
+
     command: [-config, /config/config.yaml]
