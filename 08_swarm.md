@@ -5,8 +5,12 @@ Setup swarm cluster
 
 ### Prerequisities
 
-* Re-create instances (don't need conusl instance).
-* Connect to swarm master and create overlay network `net-apps`.
+* Delete previously create vm `default`
+* Create VM instances using docker-machine
+  * `master`
+  * `node-01`
+  * `node-02`
+
 
 ### Create swarm master node
 
@@ -18,6 +22,8 @@ docker swarm init --advertise-addr <MASTER_IP>
 
 Then follow the instructions to join nodes (`node-01` and `node-02`) to swarm cluster.
 
+Create network called `net-apps` with driver overlay.
+
 ## Verify that swarm is successfully deployed
 
 ```
@@ -26,7 +32,6 @@ eval $(docker-machine env master)
 docker info
 
 docker node ls
-
 ```
 
 ## Label nodes with custom labels ##
