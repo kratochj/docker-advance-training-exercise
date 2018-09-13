@@ -5,7 +5,7 @@
   * [03 - Dockerfile - Multistage build](03_multistage_build/README.md)
   * [04 - Docker Compose](04_docker_compose.md)
   * [05 - Production images](05_prod_images/README.md)
-  * [06 - Container registry](06_container_registry/README.md)
+  * [06 - Container registry](06_container_registry.md)
   * [07 - CGroups](07_cgroups.md)
   * [08 - Setup Swarm cluster](08_swarm.md)
   * [09 - Setup Kubernetes cluster](09_kubernetes/README.md)
