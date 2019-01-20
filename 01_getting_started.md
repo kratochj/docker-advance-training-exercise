@@ -8,14 +8,8 @@ Setup Docker environment
 Install Latest Docker
 
 #### Linux
-```
-apt-get install docker
-# OR
-yum install docker
-```
 
-
-Install on Ubuntu Xenial
+Install on Ubuntu
 ```
 sudo apt-get remove docker docker-engine docker.io
 sudo apt-get install \
@@ -23,7 +17,6 @@ sudo apt-get install \
     ca-certificates \
     curl \
     software-properties-common
-
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo apt-key fingerprint 0EBFCD88
@@ -34,14 +27,6 @@ sudo add-apt-repository \
    edge"
 
 sudo apt-get update && sudo apt-get install docker-ce -y
-
-# Docker machine
-curl -L https://github.com/docker/machine/releases/download/v0.13.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
-chmod +x /tmp/docker-machine &&
-sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
-
-# Docker compose
-sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 ```
 
 #### Mac
@@ -51,29 +36,53 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-c
 #### Win
 
 [Download and install Docker for Windows](https://docs.docker.com/engine/installation/windows/)
-
 #### Verify installation
 
 ```
 docker -v
-Docker version 1.10.3, build 8b7fa4a/1.10.3
+Docker version 18.09.1, build 4c52b90
 ```
 
-### Docker-machine
+### [Docker-machine](https://docs.docker.com/machine/install-machine/)
 
-#### Linux/Mac
+#### Linux
 
-```shell
-curl -L https://github.com/docker/machine/releases/download/v0.8.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && \
-chmod +x /usr/local/bin/docker-machine
+``` bash
+# Docker machine
+base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+  curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 
-#### Win
+#### Win/Mac
 
-```shell
-if [[ ! -d "$HOME/bin" ]]; then mkdir -p "$HOME/bin"; fi && \
-curl -L https://github.com/docker/machine/releases/download/v0.8.0/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" && \
-chmod +x "$HOME/bin/docker-machine.exe"
+`docker-machine` will be installed as part of Docker For Mac/Windows.
+
+#### Verify installation
+
+``` bash
+# docker-machine version
+docker-machine version 0.16.1, build cce350d7
+```
+
+### [Docker-compose](https://docs.docker.com/compose/install/)
+
+#### Linux
+
+``` bash
+# Docker compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+#### Win/Mac
+
+`docker-compose` will be installed as part of Docker For Mac/Windows.
+
+#### Verify installation
+
+``` bash
+# docker-compose -v
+docker-compose version 1.23.2, build 1110ad01
 ```
 
 ### Virtualbox
@@ -83,9 +92,6 @@ chmod +x "$HOME/bin/docker-machine.exe"
 ### Verify installation
 
 ```
-# docker-machine version
-docker-machine version 0.8.0, build b85aac1
-
 # VirtualBox --help
 Oracle VM VirtualBox Manager 5.1.6_RPMFusion
 (C) 2005-2016 Oracle Corporation
