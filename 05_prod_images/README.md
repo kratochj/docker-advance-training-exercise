@@ -39,6 +39,8 @@ copy `clair_config` dir to host running `dockerd` and update `docker-compose.yml
 #### Start Clair ####
 
 ```
+# Copy files to destination vm
+docker-machine scp -r ./clair_config default:/var/lib/clair_config
 docker-compose -f ${BASE_PATH}/docker-compose.yml up -d
 ```
 
@@ -51,7 +53,8 @@ Download release from [project release page](https://github.com/arminc/clair-sca
 #### Scan image and print report ####
 
 ```
-./clair-scanner -c http://localhost:6060 --ip=192.168.0.111 -r test.json nginx:1.11.6-alpine
+docker pull nginx:1.11.6-alpine
+./clair-scanner -c http://$(docker-machine ip):6060 --ip=<LOCAL_IP> -r report.json nginx:1.11.6-alpine
 ```
 
 ## Labeling Docker objects ##
