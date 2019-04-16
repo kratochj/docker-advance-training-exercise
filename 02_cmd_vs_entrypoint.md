@@ -10,7 +10,7 @@ Create Dockerfiles for these variations and check how command is executed in con
 
 - array of commands
   ```
-  CMD["ping", "localhost"]
+  CMD ["ping", "localhost"]
   ```
 
 - separate entrypoint
