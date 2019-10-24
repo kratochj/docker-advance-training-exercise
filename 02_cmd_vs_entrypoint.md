@@ -19,4 +19,4 @@ Create Dockerfiles for these variations and check how command is executed in con
   CMD ["localhost"]
   ```
 
-- Specify Environemnt variables in different forms and observe behavior
+- Specify Environment variables in different forms and observe behavior
