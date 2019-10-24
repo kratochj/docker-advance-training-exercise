@@ -1,7 +1,5 @@
 # Docker Advanced - exercises
 
-[Digital Ocean Access](https://docs.google.com/document/d/1rk4oq4mycKpCD-Q73nfPpWuS1Z8GEFDHlY4SdkPQUVQ/edit?usp=sharing) 
-
   * [01 - Setup VMs running docker](01_getting_started.md)
   * [02 - Dockerfile - CMD vs ENTRYPOINT](02_cmd_vs_entrypoint.md)
   * [02(01) - Dockerfile - OS Signal handling](02_01_signal_handling/README.md)

@@ -1,4 +1,4 @@
-# Docker Compose 
+# Docker Compose
 
 
 [Docker Compose](https://docs.docker.com/compose) help you build all components into single "docker application". First of all check documentation for this tool. You will find out that docker compose simply describes architecture of your deployed app and dependencies between containers. A that's docker compose!
@@ -13,9 +13,9 @@ You would need to setup:
 2. Bunch of redis servers as a slave (at least 2)
 3. Actual application using this image: [gcr.io/google-samples/gb-frontend:v4](gcr.io/google-samples/gb-frontend:v4)
 
-Redis server in master mode you run just simply [redis image]() without parameters.
+Redis server in master mode you run just simply [dockerskoleni/redis](https://hub.docker.com/_/redis) without parameters.
 
-For Redis as a slave you need to add following parameter as a startup comand:
+For Redis as a slave you need to add following parameter as a startup command:
 
 ```
 redis-server --slaveof <master IP or hostname> 6379
@@ -23,9 +23,9 @@ redis-server --slaveof <master IP or hostname> 6379
 
 Sample guestbook app expects redis slave under hostname `redis-slave`
 
-Note: If you are using `docker-compose` version 3, you have to use this command `docker-compose --compatibility up` to be able use parameter `replicas` in docker-compose file. 
+Note: If you are using `docker-compose` version 3, you have to use this command `docker-compose --compatibility up` to be able use parameter `replicas` in docker-compose file.
 
-## Optional task
+## Optional tasks
 
 1. Place redis master and slaves into separate network from frontend
 2. Connect frontend into that network to allow communicate with redis
