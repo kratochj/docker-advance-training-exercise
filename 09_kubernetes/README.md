@@ -24,37 +24,7 @@ Now you have your kubernetes cluster spinned up. Try check kubernetes dashboard 
 
 ## Application Deployment 
 
-### 1. Create persistent volumes for our application: 
-
-MySQL and Wordpress each use a PersistentVolume to store data. While Kubernetes supports many different types of PersistentVolumes, this tutorial covers hostPath.
-
-
-```
-$ minikube ssh
-$ mkdir -p /tmp/data
-$ chmod a+rwt /tmp/data
-$ exit
-```
-
-``` shell
-kubectl create -f volumes.yaml
-```
-
-And verify that two volumes are available: 
-
-``` shell 
-kubectl get pv 
-```
-
-The response should be like this:
-
-```
-NAME         CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
-local-pv-1   20Gi       RWO           Retain          Available                                      1m
-local-pv-2   20Gi       RWO           Retain          Available                                      1m
-```
-
-### 2. Store database password as `secret`: ###
+### 1. Store database password as `secret`: ###
 
 A Secret is an object that stores a piece of sensitive data like a password or key. The manifest files are already configured to use a Secret, but you have to create your own Secret.  
 
@@ -78,7 +48,7 @@ mysql-pass    Opaque               1         37s
 ```
 
 
-### 3. Deploy MySQL ###
+### 2. Deploy MySQL ###
 
 Now that the persistent disks and secrets are defined, the Kubernetes pods can be launched. Start MySQL using `mysql.yaml`.
 
@@ -161,7 +131,7 @@ NAME                                       CAPACITY   ACCESSMODES   RECLAIMPOLIC
 pvc-cf2a956f-5ca4-11e7-8f93-0800278ca6de   20Gi       RWO           Delete          Bound     default/mysql-pv-claim               34m
 ```
 
-### 4. Deploy Wordpress ###
+### 3. Deploy Wordpress ###
 
 The following step describes deployment of a single-instance WordPress Deployment and Service. It uses many of the same features like a PVC for persistent storage and a Secret for the password. But it also uses a different setting: type: NodePort. This setting exposes WordPress to traffic from outside of the cluster.
 
