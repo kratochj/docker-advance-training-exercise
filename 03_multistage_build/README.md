@@ -31,4 +31,6 @@ my-golang-app                               latest              a689673636ba    
 
 Now try build smaler image that contains only golang app. And compare size.
 
+Hint: Build go binarie can be done by `go build -o <binary file name>`
+
 
