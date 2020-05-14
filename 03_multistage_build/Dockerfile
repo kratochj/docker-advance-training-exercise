@@ -5,4 +5,4 @@ COPY . .
 
 RUN go build -o /go/bin/app .
 
-CMD ["app"]
+CMD ["/go/bin/app"]
