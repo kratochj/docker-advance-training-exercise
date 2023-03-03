@@ -1,4 +1,4 @@
-# Docker Advanced - exercises
+# Docker - exercises
 
   * [01 - Setup VMs running docker](01_getting_started.md)
   * [02 - Dockerfile - CMD vs ENTRYPOINT](02_cmd_vs_entrypoint.md)
